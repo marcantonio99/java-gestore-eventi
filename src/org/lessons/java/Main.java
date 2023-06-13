@@ -1,5 +1,7 @@
 package org.lessons.java;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
@@ -14,12 +16,24 @@ public class Main {
         String dataString = scanner.nextLine();
         LocalDate data = LocalDate.parse(dataString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
+        System.out.print("Inserisci l'ora dell'evento (formato: HH:mm): ");
+        String oraString = scanner.nextLine();
+        LocalTime ora = LocalTime.parse(oraString, DateTimeFormatter.ofPattern("HH:mm"));
+
+        System.out.print("Inserisci il prezzo dell'evento: ");
+        String prezzoString = scanner.nextLine();
+        BigDecimal prezzo = new BigDecimal(prezzoString);
+
+
         int postiTotali = 100;
 
         try {
             // Creazione evento
             Evento evento = new Evento(titolo, data, postiTotali);
             System.out.println("Evento creato: " + evento);
+
+            Concerto concerto = new Concerto(titolo, data, postiTotali, ora, prezzo);
+            System.out.println("Concerto creato: " + concerto);
 
             // Prenoto
             System.out.print("Desideri effettuare delle prenotazioni? Sì/No: ");
