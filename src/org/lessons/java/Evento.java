@@ -1,5 +1,6 @@
 package org.lessons.java;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Evento {
     private String titolo;
@@ -47,28 +48,30 @@ public class Evento {
         return postiPrenotati;
     }
 
-    public void prenota() {
+    public void prenota() throws Exception{
         if (data.isBefore(LocalDate.now())) {
-            throw new IllegalStateException("L'evento è già passato. Impossibile effettuare prenotazioni.");
+            throw new Exception("L'evento è già passato. Impossibile effettuare prenotazioni.");
         }
         if (postiPrenotati >= postiTotali) {
-            throw new IllegalStateException("Non ci sono più posti disponibili. Impossibile effettuare prenotazioni.");
+            throw new Exception("Non ci sono più posti disponibili. Impossibile effettuare prenotazioni.");
         }
         postiPrenotati++;
     }
 
-    public void disdici() {
+    public void disdici() throws Exception{
         if (data.isBefore(LocalDate.now())) {
-            throw new IllegalStateException("L'evento è già passato. Impossibile effettuare disdette.");
+            throw new Exception("L'evento è già passato. Impossibile effettuare disdette.");
         }
         if (postiPrenotati <= 0) {
-            throw new IllegalStateException("Non ci sono prenotazioni da disdire.");
+            throw new Exception("Non ci sono prenotazioni da disdire.");
         }
         postiPrenotati--;
     }
 
     @Override
     public String toString() {
-        return data + " - " + titolo;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return data.format(formatter) + " - " + titolo;
     }
+
 }
