@@ -3,11 +3,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        /*Scanner scanner = new Scanner(System.in);
 
         System.out.print("Inserisci il titolo dell'evento: ");
         String titolo = scanner.nextLine();
@@ -32,8 +33,8 @@ public class Main {
             Evento evento = new Evento(titolo, data, postiTotali);
             System.out.println("Evento creato: " + evento);
 
-            Concerto concerto = new Concerto(titolo, data, postiTotali, ora, prezzo);
-            System.out.println("Concerto creato: " + concerto);
+            *//*Concerto concerto = new Concerto(titolo, data, postiTotali, ora, prezzo);
+            System.out.println("Concerto creato: " + concerto);*//*
 
             // Prenoto
             System.out.print("Desideri effettuare delle prenotazioni? Sì/No: ");
@@ -44,8 +45,13 @@ public class Main {
                 int numPrenotazioni = scanner.nextInt();
 
                 for (int i = 0; i < numPrenotazioni; i++) {
-                    evento.prenota();
-                    System.out.println("Prenotazione effettuata.");
+                    try {
+                        evento.prenota();
+                        System.out.println("Prenotazione " + (i + 1) + " effettuata con successo!");
+                    } catch (IllegalStateException e) {
+                        System.out.println("Impossibile effettuare la prenotazione: " + e.getMessage());
+                        break;
+                    }
                 }
             }
 
@@ -61,14 +67,41 @@ public class Main {
                 int numDisdette = scanner.nextInt();
 
                 for (int i = 0; i < numDisdette; i++) {
-                    evento.disdici();
-                    System.out.println("Disdetta effettuata.");
+                    try {
+                        evento.disdici();
+                        System.out.println("Disdetta " + (i + 1) + " effettuata con successo!");
+                    } catch (IllegalStateException e) {
+                        System.out.println("Impossibile effettuare la disdetta: " + e.getMessage());
+                        break;
+                    }
                 }
             }
             System.out.println("Posti prenotati: " + evento.getPostiPrenotati());
             System.out.println("Posti disponibili: " + (evento.getPostiTotali() - evento.getPostiPrenotati()));
         } catch (Exception e) {
             System.out.println("Si è verificato un errore: " + e.getMessage());
+        }*/
+
+        ProgrammEventi programma = new ProgrammEventi("Programma Eventi");
+
+        Evento evento1 = new Evento("Concerto 1", LocalDate.of(2023, 7, 17), 150);
+        Evento evento2 = new Evento("Concerto 2", LocalDate.of(2023, 7, 16), 100);
+        Evento evento3 = new Evento("Concerto 3", LocalDate.of(2023, 7, 25), 130);
+
+        programma.aggiungereEvento(evento1);
+        programma.aggiungereEvento(evento2);
+        programma.aggiungereEvento(evento3);
+
+        System.out.println("Numero di eventi nel programma: " + programma.getNumeroEventi());
+
+        LocalDate data = LocalDate.of(2023, 6, 16);
+        List<Evento> eventiByData = programma.getEventiByData(data);
+
+        System.out.println("Eventi in data " + data.toString() + ":");
+        for (Evento evento : eventiByData) {
+            System.out.println(evento.toString());
         }
+
+        System.out.println(programma.toString());
     }
 }
