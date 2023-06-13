@@ -41,7 +41,7 @@ public class Evento {
         this.postiPrenotati = postiPrenotati;
     }
 
-    public Evento(String titolo, Date data, int postiTotali, int postiPrenotati) {
+    public Evento(String titolo, Date data, int postiTotali) {
         this.titolo = titolo;
         this.data = data;
         this.postiTotali = postiTotali;
@@ -62,5 +62,22 @@ public class Evento {
             throw new IllegalStateException("Non ci sono prenotazioni per questo evento");
         }
         postiPrenotati++;
+    }
+
+    public void disdici() throws IllegalStateException{
+        if (data.before(new Date())){
+            throw new IllegalStateException("L'evento è passato");
+        }
+        if (postiPrenotati <= 0){
+            throw new IllegalStateException("Non ci sono prenotazioni per questo evento");
+        }
+        postiPrenotati--;
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String dataFormattata = formatter.format(data);
+        return dataFormattata + " - " + titolo;
     }
 }
