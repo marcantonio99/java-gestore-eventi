@@ -1,28 +1,72 @@
 package org.lessons.java;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            Scanner scanner = new Scanner(System.in);
 
-            Date dataEvento = formatter.parse("23/06/2023");
-            Evento concerto = new Evento("Concerto", dataEvento, 100);
+            System.out.print("Inserisci il nome dell'evento: ");
+            String titolo = scanner.nextLine();
 
-            concerto.prenota();
-            concerto.prenota();
-            System.out.println("Posti prenotati: " + concerto.getPostiPrenotati());
-            concerto.disdici();
-            System.out.println("Posti prenotati" + concerto.getPostiPrenotati());
+            System.out.print("Inserisci la data dell'evento (formato dd/MM/yyyy): ");
+            String dataString = scanner.nextLine();
+            LocalDate dataEvento = LocalDate.parse(dataString, formatter);
 
-            System.out.println(concerto.toString());
-        }catch (ParseException e){
-            System.out.println("Errore nella formattazione della data");
-        }catch (IllegalArgumentException | IllegalStateException e){
+            Evento evento = new Evento(titolo, dataEvento, 100);
+            System.out.println("Evento registrato!");
+
+            // Prenoto
+            System.out.print("Desideri effettuare delle prenotazioni? Sì/No: ");
+            String sceltaPrenotazione = scanner.nextLine();
+
+            if (sceltaPrenotazione.equalsIgnoreCase("Sì")) {
+                System.out.print("Inserisci il numero di prenotazioni che desideri fare: ");
+                int numeroPrenotazioni = scanner.nextInt();
+
+                for (int i = 0; i < numeroPrenotazioni; i++) {
+                    try {
+                        evento.prenota();
+                        System.out.println("Prenotazione registrata.");
+                    } catch (IllegalStateException e) {
+                        System.out.println("Impossibile effettuare la prenotazione: " + e.getMessage());
+                        break;
+                    }
+                }
+            }
+            System.out.println("Posti prenotati: " + evento.getPostiPrenotati());
+            System.out.println("Posti disponibili: " + (evento.getPostiTotali() - evento.getPostiPrenotati()));
+
+            // Disdico
+            System.out.print("Desideri disdire una prenotazione? Sì/No: ");
+            String sceltaDisdetta = scanner.nextLine();
+
+            if (sceltaDisdetta.equalsIgnoreCase("Sì")) {
+                System.out.print("Inserisci il numero di disdette: ");
+                int numeroDisdette = scanner.nextInt();
+
+                for (int i = 0; i < numeroDisdette; i++) {
+                    try {
+                        evento.disdici();
+                        System.out.println("Disdetta effettuata.");
+                    } catch (IllegalStateException e) {
+                        System.out.println("Impossibile disdire: " + e.getMessage());
+                        break;
+                    }
+                }
+            }
+            System.out.println("Posti prenotati: " + evento.getPostiPrenotati());
+            System.out.println("Posti disponibili: " + (evento.getPostiTotali() - evento.getPostiPrenotati()));
+
+            scanner.close();
+        } catch (IllegalArgumentException | IllegalStateException e) {
             System.out.println("Errore: " + e.getMessage());
+        } catch (InputMismatchException e) {
+            System.out.println("Input non valido.");
         }
     }
 }

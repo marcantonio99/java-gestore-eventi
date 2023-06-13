@@ -1,13 +1,24 @@
 package org.lessons.java;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Evento {
     private String titolo;
-    private Date data;
+    private LocalDate data;
     private int postiTotali;
     private int postiPrenotati;
+
+    public Evento(String titolo, LocalDate data, int postiTotali) {
+        if (data.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("La data dell'evento non può essere nel passato.");
+        }
+        if (postiTotali <= 0) {
+            throw new IllegalArgumentException("Il numero di posti totali deve essere maggiore di zero.");
+        }
+        this.titolo = titolo;
+        this.data = data;
+        this.postiTotali = postiTotali;
+        this.postiPrenotati = 0;
+    }
 
     public String getTitolo() {
         return titolo;
@@ -17,11 +28,14 @@ public class Evento {
         this.titolo = titolo;
     }
 
-    public Date getData() {
+    public LocalDate getData() {
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(LocalDate data) {
+        if (data.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("La data dell'evento non può essere nel passato.");
+        }
         this.data = data;
     }
 
@@ -29,55 +43,32 @@ public class Evento {
         return postiTotali;
     }
 
-    public void setPostiTotali(int postiTotali) {
-        this.postiTotali = postiTotali;
-    }
-
     public int getPostiPrenotati() {
         return postiPrenotati;
     }
 
-    public void setPostiPrenotati(int postiPrenotati) {
-        this.postiPrenotati = postiPrenotati;
-    }
-
-    public Evento(String titolo, Date data, int postiTotali) {
-        this.titolo = titolo;
-        this.data = data;
-        this.postiTotali = postiTotali;
-        this.postiPrenotati = postiPrenotati;
-        if (data.before(new Date())){
-            throw new IllegalArgumentException("La data non può essere questa!");
+    public void prenota() {
+        if (data.isBefore(LocalDate.now())) {
+            throw new IllegalStateException("L'evento è già passato. Impossibile effettuare prenotazioni.");
         }
-        if (postiTotali <=0){
-            throw new IllegalArgumentException("Il numero dei posti prenotati non deve essere negativo!");
-        }
-    }
-
-    public void prenota() throws IllegalStateException {
-        if (data.before(new Date())){
-            throw new IllegalStateException("L'evento è passato");
-        }
-        if (postiPrenotati <= 0){
-            throw new IllegalStateException("Non ci sono prenotazioni per questo evento");
+        if (postiPrenotati >= postiTotali) {
+            throw new IllegalStateException("Non ci sono più posti disponibili. Impossibile effettuare prenotazioni.");
         }
         postiPrenotati++;
     }
 
-    public void disdici() throws IllegalStateException{
-        if (data.before(new Date())){
-            throw new IllegalStateException("L'evento è passato");
+    public void disdici() {
+        if (data.isBefore(LocalDate.now())) {
+            throw new IllegalStateException("L'evento è già passato. Impossibile effettuare disdette.");
         }
-        if (postiPrenotati <= 0){
-            throw new IllegalStateException("Non ci sono prenotazioni per questo evento");
+        if (postiPrenotati <= 0) {
+            throw new IllegalStateException("Non ci sono prenotazioni da disdire.");
         }
         postiPrenotati--;
     }
 
     @Override
     public String toString() {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        String dataFormattata = formatter.format(data);
-        return dataFormattata + " - " + titolo;
+        return data + " - " + titolo;
     }
 }
